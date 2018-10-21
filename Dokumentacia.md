@@ -248,7 +248,12 @@ Rozhodol som sa pre možnosť implementovať 3 netriviálne scenáre vyhľadáva
 Teraz sa budem trochu detailnejie venovať každému z 3 scenárov.
 
 #### Vyhľadávanie albumov podľa mena albumu, mena autora a názvy piesne
+
+
 ![Scenar 1](scenar1.PNG)
+
+
+*Component SRC: src/app/pages/album-search*
 
 Používateľ vie vyhľadávať albumy podľa albumu, umelca alebo titulu pesničky z albumu. Ak používateľ nezadá žiadne vstupný text, vyhľadávajú sa všetky albumy. Vyhľadávanie je stránkované po 20 albumoch na stránku. Vy výsledkoch sa nájdene slová farebne vyznačujú (z angl. highlighting). Vo výsledkoch sa zobrazuje obrázok, názov, autor, pesničky, žánre a štýly albumu.
 
@@ -286,7 +291,11 @@ V závere určím, v ktorých atribútoch chcem farebne vyznačovať výskyty pr
 
 
 #### Vyhadávanie a filtrovanie albumov podľa agregácií a názvu albumu
+
 ![Scenar 2](scenar2.PNG)
+
+
+*Component SRC: src/app/pages/facets*
 
 V druhom scenry umožňuje prostredníctvom vstupného okna vyhľadávať albumy podľa názvu albumu. Použivateľ môže filtrovať albumy podľa žánru, štýlova a príslušnej dekády prostredníctvom kategorizovaného formuláru. Ak použivateľ nezadal vstup, filtrujú sa všetky dokumenty podľa filtorv z kategorizovaného formuláru. Vyhľadávanie je tiež stránkované.
 
@@ -356,7 +365,12 @@ POST http://localhost:9200/albums/album/_search
 ```
 
 #### Vyhľadávanie, filtrovanie a triedenie albumov podľa autora
+
+
 ![Scenar 3](scenar3.PNG)
+
+
+*Component SRC: src/app/pages/artist-search*
 
 V tomto scenári môže použivateľ vyhľadávať albumi podľa názvu albumu, ktorý zadá do vstupného okna. Môže filtrovať albumy podľa autora, ktorého si vyberie zo Autocomplete Select Boxu, ktorý filtruje mená autorov podľa zadaného vstupu. Použivateľ môže stránkovať výsledky. Pužívateľ môže prepínať medzi usporiadaním výsledkov podľa **relevantnosti vyhľadávania** (**_score**) alebo podľa hodnotenia a žiadanosti albumu zostupne (atribúty *stats%rating*, *stats_want*).
 
@@ -385,15 +399,30 @@ POST http://localhost:9200/albums/album/_search
   }
 }
 ```
-2. *Filtrovanie, vyhľadávanie a zoradenie albumov*
-
+2. *Filtrovanie, vyhľadávanie a zoradenie albumov* - V tomto requeste prebieha rovnko ako pri predchadzajúcich scenároch stránkovanie prostredníctvom atribútov *from* a *size*. Ak používateľ zvoli možnosť **zoradiť** podľa hodnotenia a žiadanosti, tak sa pridá parameter *sort* pre atribúty *stats_rating* a *stast_want* zoradené zostupne. V *query* sa vyhľadávajú albumy, ktorých atribút *name* obsahuje hľadaný výraz (zase aj prefixy, ako pri predch. scenároch). Výsledky sa filtrujú podľa zvolených autorov zo autocomplete vďaka atribútu *artist_name.keyword*. Ak použivateľ nevybral, žiadneho autora, parameter filter, sa v requeste nenachádza.
 
 ```http request
 POST http://localhost:9200/albums/album/_search
-
+{
+  "from": 0,
+  "size": 20,
+  "sort": [
+    { "stats_rating": { "order": "desc" }},
+    { "stats_wants": { "order": "desc"}}
+  ],
+  "query": {
+    "bool": {"must": [{ "match": { "name": "The" }}],
+      "filter": {
+        "bool": {
+          "must": { "terms": { "artist_name.keyword": [ "Coldplay", "Bob Dylan"]}          }
+        }
+      }
+    }
+  }
+}
 
 ```
 
-
-
 ### Zhodnotenie
+
+Tento projekt bol pre mňa veľmi prínosný. Príprava crawlera a dolovanie dát ma veľmi zaujali a určite som rad, že som v tejto oblasti nabral nove znalosti. Njaviac ma oslovila práca s Elasticsearch a najmä rýchla odozva vyhľadávania. Okrem toho ma silno zaujala jednoduchosť písania HTTP requestov do elasticu a možnosti indexovania atribútov pre využitie v rôznych scenároch. Verím a dúfam, že ešte budem niekedy v budúcnosti môcť pracovať s elasticearchom. Snažil som sa do tohto projektu skutočne vložiť a spraviť to najlepšie ako viem. Pomohli mi aj konzultácie, keď som niekedy uviazol na mrtvom bode a nevedel sa posunúť ďalej, alebo som niečo robil zle.

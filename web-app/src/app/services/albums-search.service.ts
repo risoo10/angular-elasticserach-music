@@ -190,7 +190,7 @@ export class AlbumsSearchService {
     if (sortingOption === CONSTANTS.SORT_OPTIONS.RATING_HAVING) {
       sortQuery = [
         {'stats_rating': {'order': 'desc'}},
-        {'stats_rating': {'order': 'desc'}}
+        {'stats_want': {'order': 'desc'}}
       ];
     }
 
