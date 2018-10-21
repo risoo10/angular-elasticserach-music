@@ -1,0 +1,77 @@
+<esm-menu [initialValue]="" (search)="onSearch($event)" placeholder="Search Album"></esm-menu>
+<div class="body content" fxLayout="column">
+  <div class="artist-autocomplete">
+    <mat-form-field class="full-width">
+      <mat-chip-list #chipList>
+        <mat-chip
+          *ngFor="let artist of selectedArtists"
+          selectable="true"
+          removable="true"
+          (removed)="remove(artist)">
+          {{artist.key}}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+        <input
+          placeholder="Select artist ..."
+          #artistInput
+          [formControl]="artistsCntrl"
+          [matAutocomplete]="auto"
+          [matChipInputFor]="chipList">
+      </mat-chip-list>
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+        <mat-option *ngFor="let artist of filteredArtists$ | async" [value]="artist">
+          {{artist.key}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+  <div class="header-row" fxLayout="row" fxLayoutAlign="space-between center">
+    <h2>Facets | Results ({{hitsTotal$ | async}}):</h2>
+    <div class="sorting-wrapper" fxLayout="row" fxLayoutGap="20px">
+      <h4>Sort by:</h4>
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="sortOption" (change)="onSortChanged()">
+          <mat-button-toggle [value]="CONSTANTS.SORT_OPTIONS.RATING_HAVING">
+            Rating + Wants
+          </mat-button-toggle>
+          <mat-button-toggle value="score">
+            Score
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+    <mat-paginator [length]="hitsTotal$ | async"
+                   [pageSize]="pageSize">
+    </mat-paginator>
+  </div>
+  <div class="results" fxLayout="row wrap" fxLayoutGap="15px">
+    <mat-card *ngFor="let album of results$ | async as list" fxFlex="0 1 calc(50% - 15px)">
+      <mat-card-content>
+        <div class="header" fxFlex="0 1 100%" fxLayout="row" fxLayoutGap="20px">
+          <div class="music-image">
+            <img [src]="album._source.image_url" alt="Album art">
+          </div>
+          <div class="header-text" fxLayout="column">
+            <span class="title">{{ album._source.name }}</span>
+            <span class="subtitle">{{ album._source.artist_name ? album._source.artist_name : 'Unknown artist' }}</span>
+            <hr>
+            <span class="subtitle">
+              Genres: {{ album._source.genres.join(', ') }}
+            </span>
+          </div>
+          <div class="column" fxLayout="column">
+            <span class="title">Rating:</span>
+            <span class="subtitle">{{album._source.stats_rating}}</span>
+            <hr>
+            <span class="title">Want:</span>
+            <span class="subtitle">{{album._source.stats_want}}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+
+</div>
+

@@ -6,6 +6,9 @@ import {from} from 'rxjs';
 import {SearchResponse} from 'elasticsearch';
 import {FacetResponse} from '../model/facet.model';
 import {map} from 'rxjs/internal/operators';
+import {Artist} from '../model/artist.model';
+import {AlbumHits, AlbumSource} from '../model/album.model';
+import {CONSTANTS} from '../constants';
 
 @Injectable({
   providedIn: 'root'
@@ -77,6 +80,134 @@ export class AlbumsSearchService {
     })).pipe(map((item: SearchResponse<any>) => item.aggregations));
   }
 
+  filterAlbumArtists(size: number = 10, searchValue: string, selectedArtists: Artist[]): Observable<Artist[]> {
+    // Filter only artist that are not selected
+    const filterQuery = {
+      'bool': {
+        'must_not': {
+          'terms': {
+            'artist_name.keyword': selectedArtists.map(artist => artist.key)
+          }
+        }
+      }
+    };
+
+    // Search query or match all if empty search
+    let query = {};
+    if (searchValue === '') {
+      query = {
+        'bool': {
+          'must': [
+            {'match_all': {}}
+          ],
+          'filter': filterQuery
+        }
+      };
+    } else {
+      query = {
+        'bool': {
+          'must': [
+            {'match': {'artist_name': searchValue}}
+          ],
+          'filter': filterQuery
+        }
+      };
+    }
+    // Aggregate artist
+    const artistAggregation = {
+      'artists': {
+        'terms': {
+          'field': 'artist_name.keyword',
+          'size': 10
+        }
+      }
+    };
+
+    return from(this.client.search({
+      index: 'albums',
+      type: 'album',
+      body: {
+        'size': 0,
+        'query': query,
+        'aggregations': artistAggregation
+      }
+    })).pipe(map((resp: SearchResponse<any>) => resp.aggregations.artists.buckets as Artist[]));
+  }
+
+  searchFilteredAlbumsSort(
+    searchText: string,
+    pageIndex: number = 0,
+    pageSize: number = 20,
+    filteredArtists: Artist[],
+    sortingOption: string
+  ): Observable<AlbumHits> {
+
+    // Filter only if filteredArtists not empty
+    let filterQuery = null;
+    if (filteredArtists && filteredArtists.length > 0) {
+      filterQuery = {
+        'bool': {
+          'must': {
+            'terms': {
+              'artist_name.keyword': filteredArtists.map((artist) => artist.key)
+            }
+          }
+        }
+      };
+    }
+
+    // If serachText is empty string search all albums, otherwise search by album name
+    let query = {};
+    if (searchText === '') {
+      query = {
+        'bool': {
+          'must': [
+            {'match_all': {}}
+          ],
+        }
+      };
+    } else {
+      query = {
+        'bool': {
+          'must': [
+            {
+              'match': {'name': searchText}
+            }
+          ],
+        }
+      };
+    }
+
+    // Add filter query if not null
+    if (filterQuery) {
+      query['bool']['filter'] = filterQuery;
+    }
+
+    // Apply sorting by rating and wanting if specified
+    let sortQuery: string | any = [
+      '_score'
+    ];
+    if (sortingOption === CONSTANTS.SORT_OPTIONS.RATING_HAVING) {
+      sortQuery = [
+        {'stats_rating': {'order': 'desc'}},
+        {'stats_rating': {'order': 'desc'}}
+      ];
+    }
+
+    return from(this.client.search({
+      index: 'albums',
+      type: 'album',
+      body: {
+        'from': pageIndex * pageSize,
+        'size': pageSize,
+        'sort': sortQuery,
+        'query': query,
+        'aggregations': this.aggregationsQuery
+      },
+      _source: ['name', 'artist_name', 'genres', 'image_url', 'stats_rating', 'stats_want']
+    })).pipe(map((resp: SearchResponse<any>) => resp.hits as AlbumHits));
+  }
+
 
   searchFilterAlbums(
     searchText: string,
@@ -144,7 +275,8 @@ export class AlbumsSearchService {
         'size': pageSize,
         'query': query,
         'aggregations': this.aggregationsQuery
-      }
+      },
+      _source: ['name', 'artist_name', 'genres', 'image_url', 'styles', 'songs', 'year']
     }));
   }
 

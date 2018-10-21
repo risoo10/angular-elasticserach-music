@@ -11,6 +11,9 @@ export interface Album {
   styles: string[];
   image_url: string;
   songs: Song[];
+  year: number;
+  stats_rating: number;
+  stats_want: number;
 }
 
 export interface AlbumSource {
