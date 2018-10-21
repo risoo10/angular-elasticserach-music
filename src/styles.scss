@@ -1,1 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Colors
+
+$primary-color: #673ab7;
+$accent-color: #ffd740;
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+*[color="accent"] {
+  background-color: $accent-color;
+  color: black;
+}
+
+em {
+  border: 2px solid $accent-color;
+  padding: .1rem .2rem;
+  border-radius: 5px;
+  color: black;
+  font-weight: bold;
+}
+
+.content {
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 1.5rem;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+h1, h2, h3, h4, h5 {
+  color: $primary-color;
+}

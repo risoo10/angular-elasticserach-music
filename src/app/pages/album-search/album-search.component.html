@@ -1,0 +1,61 @@
+<esm-menu (search)="onSearch($event)" placeholder="Search Album, Artist, Song title"></esm-menu>
+<div class="body content" fxLayout="column">
+  <div class="header-row" fxLayout="row" fxLayoutAlign="space-between">
+    <h2>Albums | Results:</h2>
+    <mat-paginator [length]="hitsTotal$ | async"
+                   [pageSize]="pageSize">
+    </mat-paginator>
+  </div>
+
+  <div class="grid-layout" fxLayout="row wrap" fxLayoutGap="15px">
+    <mat-card fxFlex="0 1 calc(50% - 15px)" class="card-wrapper" *ngFor="let album of results$ | async as list">
+
+      <mat-card-content fxLayout="row wrap" fxLayoutGap="30px">
+        <div class="header" fxFlex="0 1 100%" fxLayout="row">
+          <div class="music-image">
+            <img [src]="album._source.image_url" alt="Album art">
+          </div>
+          <div class="header-text" fxLayout="column">
+            <!--Highligting NAME -->
+            <ng-container *ngIf="album.highlight && album.highlight.hasOwnProperty('name'); else normalName">
+              <span class="title"><span [innerHtml]="album.highlight.name"></span></span>
+            </ng-container>
+            <ng-template #normalName>
+              <span class="title">{{ album._source.name }}</span>
+            </ng-template>
+
+            <!--Highligting ARTIST -->
+            <ng-container *ngIf="album.highlight && album.highlight.hasOwnProperty('artist_name'); else normalArtist">
+              <span class="subtitle"><span [innerHtml]="album.highlight.artist_name"></span></span>
+            </ng-container>
+            <ng-template #normalArtist>
+              <span class="subtitle">{{ album._source.artist_name ? album._source.artist_name : 'Unknown artist' }}
+              </span>
+            </ng-template>
+          </div>
+        </div>
+        <div class="songs-wrapper" fxFlex="0 1 calc(60% - 30px)">
+          <h5>Songs</h5>
+          <ol>
+            <li *ngFor="let song of album._source.songs">
+              <div fxLayout="row" fxLayoutAlign="space-between">
+                <span [innerHtml]="song.title"></span>
+                <span>{{song.time}}</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="genres-wrapper" fxFlex="0 1 calc(40% - 30px)">
+          <h5>Genres:</h5>
+          <mat-chip-list class="accent">
+            <mat-chip *ngFor="let genre of album._source.genres">{{genre}}</mat-chip>
+          </mat-chip-list>
+          <h5>Styles:</h5>
+          <mat-chip-list class="primary">
+            <mat-chip color="accent" *ngFor="let style of album._source.styles">{{style}}</mat-chip>
+          </mat-chip-list>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

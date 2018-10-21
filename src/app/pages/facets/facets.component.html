@@ -1,0 +1,74 @@
+<esm-menu [initialValue]="searchValue" (search)="onSearch($event)" placeholder="Search Album"></esm-menu>
+<div class="body content" fxLayout="column">
+  <div class="header-row" fxLayout="row" fxLayoutAlign="space-between">
+    <h2>Facets | Results ({{hitsTotal$ | async}}):</h2>
+    <mat-paginator [length]="hitsTotal$ | async"
+                   [pageSize]="pageSize">
+    </mat-paginator>
+  </div>
+
+  <div class="grid-layout" fxLayout="row wrap" fxLayoutGap="30px">
+    <div class="results" fxFlex="0 1 calc(70% - 30px)" fxLayout="column">
+      <div class="album-result" *ngFor="let album of results$ | async as list">
+        <mat-card>
+          <mat-card-content>
+            <div class="header" fxFlex="0 1 100%" fxLayout="row" fxLayoutGap="20px">
+              <div class="music-image">
+                <img [src]="album._source.image_url" alt="Album art">
+              </div>
+              <div class="header-text" fxLayout="column">
+                <span class="title">{{ album._source.name }}</span>
+                <span class="subtitle">{{ album._source.artist_name ? album._source.artist_name : 'Unknown artist' }}
+                </span>
+              </div>
+              <div class="genres" fxLayout="column">
+                <span class="title">Genres:</span>
+                <span class="subtitle">
+                  {{ album._source.genres.join(', ') }}
+                </span>
+              </div>
+              <div class="styles" fxLayout="column">
+                <span class="title">Styles:</span>
+                <span class="subtitle">
+                  {{ album._source.styles.join(', ') }}
+                </span>
+              </div>
+              <div class="year" fxLayout="column">
+                <span class="title">Year:</span>
+                <span class="subtitle">
+                  {{ album._source.year }}
+                </span>
+              </div>
+            </div>
+
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+    <div class="facets" fxFlex="0 1 calc(30% - 30px)">
+      <div *ngIf="facets" class="facet-group" fxLayout="column" fxLayoutGap="7px">
+        <h4>Genres:</h4>
+        <ng-container *ngFor="let facet of facets.genres_terms.buckets">
+          <mat-checkbox [(ngModel)]="facet.checked" (change)="onFacetsChange()"> {{facet.key}} ({{facet.doc_count}})
+          </mat-checkbox>
+        </ng-container>
+      </div>
+      <div *ngIf="facets" class="facet-group" fxLayout="column" fxLayoutGap="7px">
+        <h4>Styles:</h4>
+        <ng-container *ngFor="let facet of facets.styles_terms.buckets">
+          <mat-checkbox [(ngModel)]="facet.checked" (change)="onFacetsChange()"> {{facet.key}} ({{facet.doc_count}})
+          </mat-checkbox>
+        </ng-container>
+      </div>
+      <div *ngIf="facets" class="facet-group" fxLayout="column" fxLayoutGap="7px">
+        <h4>Decades:</h4>
+        <ng-container *ngFor="let facet of facets.decade_ranges.buckets">
+          <mat-checkbox [(ngModel)]="facet.checked" (change)="onFacetsChange()">
+            {{facet.from ? facet.from : '*'}} - {{facet.to ? facet.to : '*'}} ({{facet.doc_count}})
+          </mat-checkbox>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
