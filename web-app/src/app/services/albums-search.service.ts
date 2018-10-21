@@ -201,8 +201,7 @@ export class AlbumsSearchService {
         'from': pageIndex * pageSize,
         'size': pageSize,
         'sort': sortQuery,
-        'query': query,
-        'aggregations': this.aggregationsQuery
+        'query': query
       },
       _source: ['name', 'artist_name', 'genres', 'image_url', 'stats_rating', 'stats_want']
     })).pipe(map((resp: SearchResponse<any>) => resp.hits as AlbumHits));
