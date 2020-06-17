@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
+import { SearchResponse } from 'elasticsearch';
 import * as elasticsearch from 'elasticsearch-browser';
-import {Client} from 'elasticsearch-browser';
-import {Observable, from} from 'rxjs';
-import {SearchResponse} from 'elasticsearch';
-import {FacetResponse} from '../model/facet.model';
-import {map} from 'rxjs/internal/operators';
-import {Artist} from '../model/artist.model';
-import {AlbumHits, AlbumSource} from '../model/album.model';
-import {CONSTANTS} from '../constants';
+import { Client } from 'elasticsearch-browser';
+import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/internal/operators';
+import { CONSTANTS } from '../constants';
+import { AlbumHits } from '../model/album.model';
+import { Artist } from '../model/artist.model';
+import { FacetResponse } from '../model/facet.model';
 
 @Injectable({
   providedIn: 'root'
