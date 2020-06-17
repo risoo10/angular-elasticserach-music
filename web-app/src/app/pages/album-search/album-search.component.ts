@@ -20,7 +20,7 @@ export class AlbumSearchComponent implements OnInit, AfterViewInit {
 
   searched$ = new Subject();
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   hitsTotal$: Observable<number>;
   results$: Observable<AlbumSource[]>;

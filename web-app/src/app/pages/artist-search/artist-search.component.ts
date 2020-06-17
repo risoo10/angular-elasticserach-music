@@ -36,9 +36,9 @@ export class ArtistSearchComponent implements OnInit {
 
   filteredArtists$: Observable<Artist[]>;
 
-  @ViewChild('artistInput') artistInput: ElementRef<HTMLInputElement>;
-  @ViewChild('auto') matAutocomplete: MatAutocomplete;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('artistInput', { static: true }) artistInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(@Inject(AlbumsSearchService) private es: AlbumsSearchService) {
   }

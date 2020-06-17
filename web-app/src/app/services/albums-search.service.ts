@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as elasticsearch from 'elasticsearch-browser';
 import {Client} from 'elasticsearch-browser';
-import {Observable} from 'rxjs';
-import {from} from 'rxjs';
+import {Observable, from} from 'rxjs';
 import {SearchResponse} from 'elasticsearch';
 import {FacetResponse} from '../model/facet.model';
 import {map} from 'rxjs/internal/operators';

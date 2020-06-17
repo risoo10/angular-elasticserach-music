@@ -1,12 +1,10 @@
-import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {AlbumHits, AlbumSource} from '../../model/album.model';
-import {MatPaginator} from '@angular/material';
-import {merge, Observable, Subject} from 'rxjs';
-import {AlbumsSearchService} from '../../services/albums-search.service';
-import {SearchResponse} from 'elasticsearch';
-import {FormArray, FormControl} from '@angular/forms';
-import {FacetGroup, FacetResponse, RangeFacetGroup} from '../../model/facet.model';
-import {map, switchMap, take, takeUntil} from 'rxjs/internal/operators';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material';
+import { merge, Observable, Subject } from 'rxjs';
+import { map, switchMap, take, takeUntil } from 'rxjs/internal/operators';
+import { AlbumHits, AlbumSource } from '../../model/album.model';
+import { FacetGroup, FacetResponse, RangeFacetGroup } from '../../model/facet.model';
+import { AlbumsSearchService } from '../../services/albums-search.service';
 
 @Component({
   selector: 'esm-facets',
@@ -24,7 +22,7 @@ export class FacetsComponent implements OnInit, AfterViewInit, OnDestroy {
   facetChanged$ = new Subject();
   initialized$ = new Subject();
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   hitsTotal$: Observable<number>;
   results$: Observable<AlbumSource[]>;
