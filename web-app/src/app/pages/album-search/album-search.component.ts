@@ -39,8 +39,8 @@ export class AlbumSearchComponent implements OnInit, AfterViewInit {
       }),
       map((val) => val.hits)
     );
-    this.hitsTotal$ = hits$.pipe(map((hits: AlbumHits) => hits.total));
-    this.results$ = hits$.pipe(map((results: AlbumHits) => results.hits));
+    this.hitsTotal$ = hits$.pipe(map((hits: any) => hits.total));
+    this.results$ = hits$.pipe(map((results: any) => results.hits));
   }
 
   ngOnInit(): void {

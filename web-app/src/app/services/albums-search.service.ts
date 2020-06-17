@@ -79,7 +79,7 @@ export class AlbumsSearchService {
     })).pipe(map((item: SearchResponse<any>) => item.aggregations));
   }
 
-  filterAlbumArtists(size: number = 10, searchValue: string, selectedArtists: Artist[]): Observable<Artist[]> {
+  filterAlbumArtists(size: number = 10, searchValue: string, selectedArtists: Artist[]): Observable<any> {
     // Filter only artist that are not selected
     const filterQuery = {
       'bool': {
@@ -139,7 +139,7 @@ export class AlbumsSearchService {
     pageSize: number = 20,
     filteredArtists: Artist[],
     sortingOption: string
-  ): Observable<AlbumHits> {
+  ): Observable<any> {
 
     // Filter only if filteredArtists not empty
     let filterQuery = null;
@@ -212,7 +212,7 @@ export class AlbumsSearchService {
     facets: FacetResponse,
     pageIndex: number = 0,
     pageSize: number = 20
-  ): Observable<SearchResponse<any>> {
+  ): Observable<any> {
 
     // Prepare filter query
     const filterQuery = [
@@ -278,7 +278,7 @@ export class AlbumsSearchService {
     }));
   }
 
-  searchFullText(searchText: string, pageIndex: number = 0, pageSize: number = 20): Observable<SearchResponse<any>> {
+  searchFullText(searchText: string, pageIndex: number = 0, pageSize: number = 20): Observable<any> {
 
     // Search query or match all if empty search
     const query = {};
