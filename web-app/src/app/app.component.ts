@@ -5,7 +5,7 @@ import {debounceTime, switchMap} from 'rxjs/operators';
 import {merge, Observable} from 'rxjs';
 import {map, take} from 'rxjs/internal/operators';
 import {Album, AlbumHits, AlbumSource} from './model/album.model';
-import {MatPaginator} from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'esm-root',

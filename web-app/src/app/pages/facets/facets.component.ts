@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
 import { merge, Observable, Subject } from 'rxjs';
 import { map, switchMap, take, takeUntil } from 'rxjs/internal/operators';
 import { AlbumHits, AlbumSource } from '../../model/album.model';

@@ -5,15 +5,15 @@ import {AppComponent} from './app.component';
 import {AlbumsSearchService} from './services/albums-search.service';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {
-  MatAutocompleteModule,
-  MatButtonModule, MatButtonToggleModule,
-  MatCardModule,
-  MatCheckboxModule,
-  MatChipsModule, MatIconModule,
-  MatInputModule,
-  MatPaginatorModule
-} from '@angular/material';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AlbumSearchComponent} from './pages/album-search/album-search.component';
 import {MenuComponent} from './components/menu/menu.component';
